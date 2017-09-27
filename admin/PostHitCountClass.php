@@ -22,7 +22,41 @@ class PostHitCount
 
     private function postHitCounterAdmin()
     {
-        add_menu_page('PostHitCounter', 'Post Hit Counter', 'manage_options', 'post_hit_counter', array($this, 'adminPHC'), 'dashicons-chart-bar', '55');
+        add_menu_page('Hits Counter', 'Hits Counter', 'manage_options', 'post_hit_counter', array($this, 'adminPHC'), 'dashicons-chart-bar', '55');
+        add_submenu_page('post_hit_counter', 'Settings', 'Hits Counter Setting', 'manage_options', 'hit_counter_setting', array($this, 'settingPHC'));
+    }
+
+
+    public function settingPHC()
+    {
+        ?>
+        <h1>Setting Hits Counter</h1>
+        <?php
+            if(isset($_POST['save_hcs']))
+            {
+                unset($_POST['save_hcs']);
+                update_option('post_type_hits_cout_', serialize($_POST));
+            }
+
+            $setOption = unserialize(get_option('post_type_hits_cout_'));
+
+            $args = array('public' => true, 'show_ui' => true, 'exclude_from_search' => false, 'show_in_nav_menus' => true);        
+            $postTypes = get_post_types($args, 'objects', 'and');
+        ?>
+        <div class="">
+            <form name="" action="" method="post">
+                <?php
+                    foreach($postTypes as $postType)
+                    {
+                        $checked = isset($setOption[$postType->name]) && $setOption[$postType->name] == 1 ? 'checked' : '';
+                        echo '<p><input type="checkbox" name="'. $postType->name .'" '. $checked .' value="1"/>';
+                        echo '<label>'. $postType->label .'</label></p>';
+                    }
+                ?>
+                <button type="submit" name="save_hcs" class="button button-primary">Submit</button>
+            </form>
+        </div>
+        <?php
     }
 
 
@@ -77,7 +111,7 @@ class PostHitCount
             }
 
             .ui-datepicker-title {
-                display: block;
+                float: left;
                 cursor: pointer;
                 padding: 0 5px 0;
             }
@@ -87,10 +121,8 @@ class PostHitCount
                 display: inline-block;
                 margin: 0;
                 padding: 0px 0;
-            }
-
-            a.ui-datepicker-next.ui-corner-all {
-                float: right;
+                height: 24px;
+                float: left;
             }
 
             a.ui-datepicker-next.ui-corner-all,
@@ -99,9 +131,13 @@ class PostHitCount
                 background: #aaa;
                 font-size: 13px;
                 color: #eff;
-                display: inline;
                 border-radius: 0px;
                 cursor: pointer;
+                float: left;
+            }
+
+            a.ui-datepicker-next.ui-corner-all {
+                float: right;
             }
         </style>
         <script>
@@ -233,7 +269,7 @@ class PostHitCount
      */
     private function countPostRead()
     {
-        if (!is_user_logged_in())
+        if (!is_user_logged_in() && is_post_type())
         {
             global $wpdb;
             $postID = get_the_ID();

@@ -4,7 +4,7 @@
 Plugin Name: Hits Counter
 Plugin URI: https://github.com/bluesuiter/Hits-Counter
 Description: 
-Version: 0.6.01
+Version: 0.9.17
 Author: Script-Recipes
 Author URI: https://www.facebook.com/Script-Recipes-252174671855204/
 Donate link: 
