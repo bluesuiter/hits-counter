@@ -30,3 +30,17 @@ if(file_exists(dirname(__FILE__) . '/admin/PostHitCountClass.php'))
     add_action('admin_menu', array($postHitCounter, 'counterAdmin'));
     add_action('wp_footer', array($postHitCounter, 'callCounter'));
 }
+
+
+function is_post_type()
+{
+    global $post;
+    $postTypes = unserialize(get_option('post_type_hits_cout_'));
+    $postType = $post->post_type;
+
+    if(isset($postTypes[$postType]) && $postTypes[$postType]==1)
+    {
+        return true;
+    }
+    return false;
+}
