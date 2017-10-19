@@ -30,7 +30,7 @@ class PostHitCount
     public function settingPHC()
     {
         ?>
-        <h1>Setting Hits Counter</h1>
+        <h1 class="wp-heading-inline">Setting Hits Counter</h1>
         <?php
             if(isset($_POST['save_hcs']))
             {
@@ -45,6 +45,7 @@ class PostHitCount
         ?>
         <div class="">
             <form name="" action="" method="post">
+                <label><strong>Capture Post Hits For:</strong></label>
                 <?php
                     foreach($postTypes as $postType)
                     {
@@ -64,6 +65,14 @@ class PostHitCount
     {
         global $wpdb;
         wp_enqueue_script('jquery-ui-datepicker');
+
+        $startDate = $endDate = date('Y-m-d');
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['find_record']))
+        {
+            $startDate = ($_POST['start_date'] != '' ? $_POST['start_date'] : '');
+            $endDate = ($_POST['end_date'] != '' ? $_POST['end_date'] : '');
+        }
         ?>
         <style type="text/css">
             .post_hit_record{
@@ -86,7 +95,7 @@ class PostHitCount
 
             .post_hit_record input[type="text"]{
                 background: #fff;
-                padding: 5px;
+                padding: 4px;
             }
 
             .ui-datepicker {
@@ -115,6 +124,11 @@ class PostHitCount
                 cursor: pointer;
                 padding: 0 5px 0;
             }
+            
+            .ui-state-active{
+                background: #0073aa;
+                color: #fff;
+            }
 
             .ui-datepicker-title select.ui-datepicker-year,
             .ui-datepicker-title select.ui-datepicker-month{
@@ -142,17 +156,18 @@ class PostHitCount
         </style>
         <script>
             jQuery(document).ready(function () {
-                jQuery('input[name="date"]').datepicker({changeMonth: true,
+                jQuery('.datepicker').datepicker({changeMonth: true,
                     changeYear: true, inline: false,
                     dateFormat: "yy-mm-dd"
                 });
             });
         </script>
         <div class="post_hit_record">
-            <h2>Post Hit Counts Record</h2>
+            <h1 class="wp-heading-inline">Post Hit Counts Record</h1>
             <div class="alignleft">
                 <form method="post" action="<?= site_url() ?>/wp-admin/admin.php?page=post_hit_counter">
-                    <input type="text" name="date" class="input" placeholder="Date" readonly="" value="<?php echo $this->getFromUrl('date') ?>" />
+                    <input type="text" name="start_date" class="input datepicker" placeholder="Start Date" readonly="" value="<?php echo $startDate ?>" />
+                    <input type="text" name="end_date" class="input datepicker" placeholder="End Date" readonly="" value="<?php echo $endDate ?>" />
                     <input type="submit" class="button button-primary" name="find_record" value="Find Record"/>
                 </form>
             </div>
@@ -175,14 +190,8 @@ class PostHitCount
                 </thead>
                 <tbody>
                     <?php
-                    $dateRecord = date('Y-m-d');
-                    if (isset($_POST['find_record']) && isset($_POST['date']))
-                    {
-                        $dateRecord = ($_POST['date'] != '' ? $_POST['date'] : '');
-                    }
-
                     $table = $wpdb->prefix . $this->table;
-                    $select = 'SELECT `id`, `post_id`, `hit_count`, `hit_date` FROM ' . $table . ' WHERE DATE(hit_date)="' . $dateRecord . '"';
+                    $select = 'SELECT `id`, `post_id`, `hit_count`, `hit_date` FROM ' . $table . ' WHERE DATE(hit_date) BETWEEN "' . $startDate . '" AND "' . $endDate . '"';
 
                     if (isset($_GET['rcrdfnd']) && $_GET['rcrdfnd'] == 'all_time')
                     {
@@ -260,6 +269,7 @@ class PostHitCount
         {
             return $_POST[$key];
         }
+        return false;
     }
 
 
@@ -273,24 +283,25 @@ class PostHitCount
         {
             global $wpdb;
             $postID = get_the_ID();
-            $postHitCount = 1;
-            $date = date('Y-m-d');
-
             $table = $wpdb->prefix . $this->table;
 
             $select = 'SELECT `id`, `hit_count` FROM ' . $table . ' WHERE DATE(hit_date)=CURDATE() AND `post_id`=' . $postID;
-
             $select = $wpdb->get_row($select);
 
             if (empty($select))
             {
-                $wpdb->insert($table, array('post_id' => $postID, 'hit_count' => 1), array('%d', '%d'));
+                $result = $wpdb->insert($table, array('post_id' => $postID, 'hit_count' => 1), array('%d', '%d'));
             }
             else
             {
-                $id = $select->id;
-                $hit_count = $select->hit_count + 1;
-                $wpdb->query('UPDATE ' . $table . ' SET hit_count=' . $hit_count . ' WHERE id=' . $id);
+                $recordId = $select->id;
+                $hitCount = $select->hitCount + 1;
+                $result = $wpdb->query('UPDATE ' . $table . ' SET hit_count=' . $hitCount . ' WHERE id=' . $recordId);
+            }
+
+            if(is_wp_error($result))
+            {
+                echo 'Error Hits Count:: ' . $result->get_error_message();
             }
         }
     }
