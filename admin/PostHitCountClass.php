@@ -70,8 +70,8 @@ class PostHitCount
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['find_record']))
         {
-            $startDate = ($_POST['start_date'] != '' ? $_POST['start_date'] : '');
-            $endDate = ($_POST['end_date'] != '' ? $_POST['end_date'] : '');
+            $startDate = ($_POST['start_date'] != '' ? sanitize_text_field($_POST['start_date']) : '');
+            $endDate = ($_POST['end_date'] != '' ? sanitize_text_field($_POST['end_date']) : '');
         }
         ?>
         <style type="text/css">
