@@ -19,8 +19,8 @@ if(!defined('ABSPATH'))
 if(file_exists(dirname(__FILE__) . '/database/database.php'))
 {
     require_once(dirname(__FILE__) . '/database/database.php');
-    $_hcDataBase = new _hcDataBaseClass();
-    register_activation_hook(__FILE__, array($_hcDataBase, '_hcInstallDataTables'));
+    $hcDataBase = new hcDataBaseClass();
+    register_activation_hook(__FILE__, array($hcDataBase, 'hcInstallDataTables'));
 }
 
 if(file_exists(dirname(__FILE__) . '/admin/PostHitCountClass.php'))
