@@ -8,31 +8,37 @@ class PostHitCount
     var $recordLimit = 100;
     var $urlString = '';
 
-    public function counterAdmin()
+    public function phcAdmin()
     {
         $this->postHitCounterAdmin();
     }
 
 
-    public function callCounter()
+    public function phcCallCounter()
     {
-        $this->countPostRead();
+        $this->phcPostRead();
     }
 
 
+    /**
+     * Add Menu for the Admin Panel
+     */
     private function postHitCounterAdmin()
     {
-        add_menu_page('Hits Counter', 'Hits Counter', 'manage_options', 'post_hit_counter', array($this, 'adminPHC'), 'dashicons-chart-bar', '55');
-        add_submenu_page('post_hit_counter', 'Settings', 'Hits Counter Setting', 'manage_options', 'hit_counter_setting', array($this, 'settingPHC'));
+        add_menu_page('Hits Counter', 'Hits Counter', 'manage_options', 'post_hit_counter', array($this, 'phcRecordAdmin'), 'dashicons-chart-bar', '55');
+        add_submenu_page('post_hit_counter', 'Settings', 'Hits Counter Setting', 'manage_options', 'hit_counter_setting', array($this, 'phcSettingPanel'));
     }
 
 
-    public function settingPHC()
+    /**
+     * Enable Post Hit Counter for Specific Post Types
+     */
+    public function phcSettingPanel()
     {
         ?>
         <h1 class="wp-heading-inline">Setting Hits Counter</h1>
         <?php
-            if(isset($_POST['save_hcs']))
+            if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_hcs']))
             {
                 unset($_POST['save_hcs']);
                 update_option('post_type_hits_cout_', serialize($_POST));
@@ -60,8 +66,11 @@ class PostHitCount
         <?php
     }
 
-
-    public function adminPHC()
+    
+    /**
+     * Post Hit Counts Showing Panel
+     */
+    public function phcRecordAdmin()
     {
         global $wpdb;
         wp_enqueue_script('jquery-ui-datepicker');
@@ -70,8 +79,8 @@ class PostHitCount
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['find_record']))
         {
-            $startDate = ($_POST['start_date'] != '' ? sanitize_text_field($_POST['start_date']) : '');
-            $endDate = ($_POST['end_date'] != '' ? sanitize_text_field($_POST['end_date']) : '');
+            $startDate = phcGetFromUrl('start_date');
+            $endDate = phcGetFromUrl('end_date');
         }
         ?>
         <style type="text/css">
@@ -193,7 +202,7 @@ class PostHitCount
                     $table = $wpdb->prefix . $this->table;
                     $select = 'SELECT `id`, `post_id`, `hit_count`, `hit_date` FROM ' . $table . ' WHERE DATE(hit_date) BETWEEN "' . $startDate . '" AND "' . $endDate . '"';
 
-                    if (isset($_GET['rcrdfnd']) && $_GET['rcrdfnd'] == 'all_time')
+                    if (phcGetFromUrl('rcrdfnd') == 'all_time')
                     {
                         $select = 'SELECT `id`, `post_id`, SUM(`hit_count`) as `hit_count` FROM ' . $table . ' WHERE 1 GROUP BY `post_id` ORDER BY `hit_count` DESC';
                     }
@@ -259,25 +268,11 @@ class PostHitCount
     }*/
 
 
-    public function getFromUrl($key)
-    {
-        if (isset($_GET[$key]))
-        {
-            return $_GET[$key];
-        }
-        elseif (isset($_POST[$key]))
-        {
-            return $_POST[$key];
-        }
-        return false;
-    }
-
-
     /*
      * countPostRead
      * Function resposible for updating hit in database.
      */
-    private function countPostRead()
+    private function phcPostRead()
     {
         if (!is_user_logged_in() && is_post_type())
         {

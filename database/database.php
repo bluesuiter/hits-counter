@@ -1,15 +1,18 @@
 <?php
 
-class hcDataBaseClass{
+class phcDataBaseClass{
 
     var $tableName = 'hitsCount';
 
-    public function hcInstallDataTables()
+    public function phcInstallDataTables()
     {
-        $this->hcAddDataTable();
+        $this->phcAddDataTable();
     }
 
-    private function hcAddDataTable()
+    /**
+     * This Will Add Table for plugin
+     */
+    private function phcAddDataTable()
     {
         global $wpdb;
 
