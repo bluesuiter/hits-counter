@@ -32,7 +32,7 @@ if(file_exists(dirname(__FILE__) . '/admin/PostHitCountClass.php'))
 }
 
 
-function is_post_type()
+function phcPostType()
 {
     global $post;
     $postTypes = unserialize(get_option('post_type_hits_cout_'));
@@ -46,15 +46,11 @@ function is_post_type()
 }
 
 
-function phcGetFromUrl($key)
+function phcReadArray($ar, $key)
 {
-    if (isset($_GET[$key]))
+    if (isset($ar[$key]) && !empty($ar[$key]))
     {
-        return esc_html($_GET[$key]);
-    }
-    elseif (isset($_POST[$key]))
-    {
-        return esc_html($_POST[$key]);
+        return ($ar[$key]);
     }
     return false;
 }

@@ -79,8 +79,8 @@ class PostHitCount
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['find_record']))
         {
-            $startDate = phcGetFromUrl('start_date');
-            $endDate = phcGetFromUrl('end_date');
+            $startDate = phcReadArray($_POST, 'start_date');
+            $endDate = phcReadArray($_POST, 'end_date');
         }
         ?>
         <style type="text/css">
@@ -174,14 +174,14 @@ class PostHitCount
         <div class="post_hit_record">
             <h1 class="wp-heading-inline">Post Hit Counts Record</h1>
             <div class="alignleft">
-                <form method="post" action="<?= site_url() ?>/wp-admin/admin.php?page=post_hit_counter">
+                <form method="post" action="<?php echo site_url() ?>/wp-admin/admin.php?page=post_hit_counter">
                     <input type="text" name="start_date" class="input datepicker" placeholder="Start Date" readonly="" value="<?php echo $startDate ?>" />
                     <input type="text" name="end_date" class="input datepicker" placeholder="End Date" readonly="" value="<?php echo $endDate ?>" />
                     <input type="submit" class="button button-primary" name="find_record" value="Find Record"/>
                 </form>
             </div>
             <div class="alignright">
-                <a class="button" class="button" href="<?= site_url() ?>/wp-admin/admin.php?page=post_hit_counter&rcrdfnd=all_time">
+                <a class="button" class="button" href="<?php echo site_url() ?>/wp-admin/admin.php?page=post_hit_counter&rcrdfnd=all_time">
                     All Time Hit Count
                 </a>
             </div>
@@ -202,7 +202,7 @@ class PostHitCount
                     $table = $wpdb->prefix . $this->table;
                     $select = 'SELECT `id`, `post_id`, `hit_count`, `hit_date` FROM ' . $table . ' WHERE DATE(hit_date) BETWEEN "' . $startDate . '" AND "' . $endDate . '"';
 
-                    if (phcGetFromUrl('rcrdfnd') == 'all_time')
+                    if (phcReadArray($_GET, 'rcrdfnd') == 'all_time')
                     {
                         $select = 'SELECT `id`, `post_id`, SUM(`hit_count`) as `hit_count` FROM ' . $table . ' WHERE 1 GROUP BY `post_id` ORDER BY `hit_count` DESC';
                     }
@@ -274,13 +274,13 @@ class PostHitCount
      */
     private function phcPostRead()
     {
-        if (!is_user_logged_in() && is_post_type())
+        if (!is_user_logged_in() && phcPostType())
         {
             global $wpdb;
             $postID = get_the_ID();
             $table = $wpdb->prefix . $this->table;
 
-            $select = 'SELECT `id`, `hit_count` FROM ' . $table . ' WHERE DATE(hit_date)=CURDATE() AND `post_id`=' . $postID;
+            $select = 'SELECT `id`, `hit_count` as `hitCount` FROM ' . $table . ' WHERE DATE(hit_date)=CURDATE() AND `post_id`=' . $postID;
             $select = $wpdb->get_row($select);
 
             if (empty($select))
