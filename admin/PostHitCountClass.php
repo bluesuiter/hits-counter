@@ -204,8 +204,9 @@ class PostHitCount
 
                     if (phcReadArray($_GET, 'rcrdfnd') == 'all_time')
                     {
-                        $select = 'SELECT `id`, `post_id`, SUM(`hit_count`) as `hit_count` FROM ' . $table . ' WHERE 1 GROUP BY `post_id` ORDER BY `hit_count` DESC';
+                        $select = 'SELECT `id`, `post_id`, SUM(`hit_count`) as `hit_count` FROM ' . $table . ' WHERE 1 ';
                     }
+                    $select .= ' GROUP BY `post_id` ORDER BY `hit_count` DESC';
 
                     /*if(isset($_GET['pg']) && $_GET['pg']!='')
                     {
