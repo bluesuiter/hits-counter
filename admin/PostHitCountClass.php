@@ -2,7 +2,7 @@
 
 class PostHitCount {
 
-    var $table = 'hitscount';
+    var $table = 'hitsCount';
     var $recordCount = 0;
     var $recordLimit = 100;
     var $urlString = '';
