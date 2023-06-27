@@ -29,14 +29,12 @@ class ShowPostListing extends phcDataBaseClass {
                 $period = $this->timePeriod($atts);
             } elseif ($atts['period'] === 'today') {
                 $period = $this->timePeriod($atts);
-            } elseif ($atts['period'] === 'all'){
-                $period = '';
             }
         }
 
         $sqlQry = "SELECT post_id as ID "
                 . "FROM $table "
-                . "WHERE 1 $period "
+                . "WHERE $period "
                 . "GROUP BY post_id "
                 . "ORDER BY SUM(hit_count) DESC";
 
@@ -97,15 +95,16 @@ class ShowPostListing extends phcDataBaseClass {
             case 'month':
                 $year = (isset($atts['year']) ? $atts['year'] : date('Y'));
                 $month = (isset($atts['month']) ? $atts['month'] : date('m'));
-                $query = " AND YEAR(hit_date)=" . $year . " AND MONTH(hit_date)=" . $month . " ";
+                $query = " YEAR(hit_date)=" . $year . " AND MONTH(hit_date)=" . $month . " ";
                 break;
             case 'days':
                 $days = (isset($atts['days']) ? $atts['days'] : 7);
-                $query = 'AND hit_date BETWEEN CURDATE() - INTERVAL ' . $days . ' DAY AND CURDATE() ';
-                break;
+                /*$query = ' hit_date BETWEEN CURDATE() - INTERVAL ' . $days . ' DAY AND CURDATE() ';*/
+                $query = ' DATE(hit_date) BETWEEN "' . date('Y-m-d', strtotime('-'.$days.' days')) . '" AND "' . date('Y-m-d') . '"';
+                break;                
             case 'today':
                 $days = (isset($atts['days']) ? $atts['days'] : 7);
-                $query = 'AND hit_date=CURDATE() ';
+                $query = ' hit_date=CURDATE() ';
                 break;
             default:
                 break;

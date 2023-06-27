@@ -1,12 +1,12 @@
 <?php
 
 /*
-Plugin Name: Hits Counter
+Plugin Name: Post Hits Counter
 Plugin URI: https://github.com/bluesuiter/Hits-Counter
 Description: A simple plugin for capturing hits on posts of your wordpress blog. Install it and see the hit records in your Admin Panel.
-Version: 0.11.18
+Version: 1.2.23
 Author: Script-Recipes
-Author URI: https://www.facebook.com/Script-Recipes-252174671855204/
+Author URI: https://scriptrecipes.blogspot.in/2017/11/post-hits-counter.html
 Donate link: 
 License: GPL2
 */
@@ -16,42 +16,36 @@ if(!defined('ABSPATH'))
     die;
 }
 
-if(file_exists(dirname(__FILE__) . '/database/database.php'))
+try
 {
-    require_once(dirname(__FILE__) . '/database/database.php');
-    $phcDataBase = new phcDataBaseClass();
-    register_activation_hook(__FILE__, array($phcDataBase, 'phcInstallDataTables'));
-}
-
-if(file_exists(dirname(__FILE__) . '/admin/PostHitCountClass.php'))
-{
-    require_once(dirname(__FILE__) . '/admin/PostHitCountClass.php');
-    $postHitCounter = new PostHitCount();
-    add_action('admin_menu', array($postHitCounter, 'phcAdmin'));
-    add_action('wp_footer', array($postHitCounter, 'phcCallCounter'));
-}
-
-
-function phcPostType()
-{
-    global $post;
-    $postTypes = unserialize(get_option('post_type_hits_cout_'));
-    $postType = $post->post_type;
-
-    if(isset($postTypes[$postType]) && $postTypes[$postType]==1)
+    if(file_exists(dirname(__FILE__) . '/helper.php'))
     {
-        return true;
+        require_once(dirname(__FILE__) . '/helper.php');
     }
-    return false;
-}
 
-
-function phcReadArray($ar, $key)
-{
-    if (isset($ar[$key]) && !empty($ar[$key]))
+    if(file_exists(dirname(__FILE__) . '/database/database.php'))
     {
-        return ($ar[$key]);
+        require_once(dirname(__FILE__) . '/database/database.php');
+        $phcDataBase = new phcDataBaseClass();
+        register_activation_hook(__FILE__, array($phcDataBase, 'phcInstallDataTables'));
+        add_action('plugins_loaded', array($phcDataBase, 'phcUpdatesCheck'));
     }
-    return false;
+
+    if(file_exists(dirname(__FILE__) . '/admin/PostHitCountClass.php'))
+    {
+        require_once(dirname(__FILE__) . '/admin/PostHitCountClass.php');
+        require_once(dirname(__FILE__) . '/admin/ShowPostListingClass.php');
+        $postHitCounter = new PostHitCount();
+        add_action('admin_menu', array($postHitCounter, 'phcAdmin'));
+        add_action('wp_footer', array($postHitCounter, 'phcCounterAjax'));
+        add_shortcode('phcTotalHit', array($postHitCounter, 'phcTotalHitsCount'));
+        add_action('wp_ajax_nopriv_post_read', [$postHitCounter, 'phcCallCounter']);
+        add_action('wp_ajax_nopriv_rcrd_srch_query', [$postHitCounter, 'saveSearchQuery']);
+    }
+}
+catch(Exception $e)
+{
+    echo $e->getMessage();
 }
 
+?>
