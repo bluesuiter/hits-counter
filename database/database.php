@@ -29,7 +29,17 @@ class phcDataBaseClass{
 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
-        }      
+        }
+
+        // added device type
+        if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+            $sql = "ALTER TABLE `$table_name` 
+                        ADD COLUMN device_type enum('desktop', 'mobile') AFTER `hit_count`;
+                  ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
     }
 }
 ?>
