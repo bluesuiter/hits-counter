@@ -34,7 +34,8 @@ class phcDataBaseClass{
         // added device type
         if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
             $sql = "ALTER TABLE `$table_name` 
-                        ADD COLUMN device_type enum('desktop', 'mobile') AFTER `hit_count`;
+                        ADD COLUMN `desktop` INT NOT NULL DEFAULT '0' AFTER `hit_count`,
+                        ADD COLUMN `mobile` INT NOT NULL DEFAULT '0' AFTER `desktop`;
                   ) $charset_collate;";
 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
