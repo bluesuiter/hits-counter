@@ -8,9 +8,15 @@
 .ui-datepicker td {padding: 3px;}
 a.ui-state-default {text-decoration: none; padding: 4px 3px; cursor: pointer;}
 a.ui-state-default:hover {background: #0073aa; color: #fff;}
+<<<<<<< HEAD
 .ui-datepicker-title {float: left; cursor: pointer; padding: 0 5px 0;}
 .ui-state-active{background: #0073aa; color: #fff;}
 .ui-datepicker-title select.ui-datepicker-year, .ui-datepicker-title select.ui-datepicker-month{display: inline-block; height: 24px;}
+=======
+.ui-datepicker-title {cursor: pointer; padding: 0 5px 0;}
+.ui-state-active{background: #0073aa; color: #fff;}
+.ui-datepicker-title select.ui-datepicker-year, .ui-datepicker-title select.ui-datepicker-month{display: inline-block; margin: 0; padding: 0px 0; height: 24px; float: left;}
+>>>>>>> b9990d2 (new version)
 a.ui-datepicker-next.ui-corner-all, a.ui-datepicker-prev.ui-corner-all {padding: 3px 7px; background: #aaa; font-size: 13px; color: #eff; border-radius: 0px; cursor: pointer; float: left;}
 a.ui-datepicker-next.ui-corner-all {float: right;}
 </style>

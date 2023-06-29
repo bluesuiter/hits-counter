@@ -163,7 +163,6 @@ class PostHitCount
         $select = $wpdb->get_results($select);
         $this->recordCount = $wpdb->num_rows;
         
-
         phcLoadTemplate('phc-records-panel', compact('startDate', 'endDate', 'select'));
         ?>
     
