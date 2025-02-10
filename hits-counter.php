@@ -11,30 +11,26 @@ Donate link:
 License: GPL2
 */
 
-if (!defined('ABSPATH'))
-{
+if (!defined('ABSPATH')) {
     die;
 }
 
-try
-{
-    if (file_exists(dirname(__FILE__) . '/helper.php'))
-    {
+try {
+    if (file_exists(dirname(__FILE__) . '/helper.php')) {
         require_once(dirname(__FILE__) . '/helper.php');
     }
 
-    if (file_exists(dirname(__FILE__) . '/database/database.php'))
-    {
+    if (file_exists(dirname(__FILE__) . '/database/database.php')) {
         require_once(dirname(__FILE__) . '/database/database.php');
         $phcDataBase = new phcDataBaseClass();
         register_activation_hook(__FILE__, array($phcDataBase, 'phcInstallDataTables'));
         add_action('plugins_loaded', array($phcDataBase, 'phcUpdatesCheck'));
     }
 
-    if (file_exists(dirname(__FILE__) . '/admin/PostHitCountClass.php'))
-    {
+    if (file_exists(dirname(__FILE__) . '/admin/PostHitCountClass.php')) {
         require_once(dirname(__FILE__) . '/admin/PostHitCountClass.php');
         require_once(dirname(__FILE__) . '/admin/ShowPostListingClass.php');
+        
         $postHitCounter = new PostHitCount();
         add_action('admin_menu', array($postHitCounter, 'phcAdmin'));
         add_action('wp_footer', array($postHitCounter, 'phcCounterAjax'));
@@ -42,8 +38,6 @@ try
         add_action('wp_ajax_nopriv_post_read', [$postHitCounter, 'phcCallCounter']);
         add_action('wp_ajax_nopriv_rcrd_srch_query', [$postHitCounter, 'saveSearchQuery']);
     }
-}
-catch (Exception $e)
-{
+} catch (Exception $e) {
     echo $e->getMessage();
 }
