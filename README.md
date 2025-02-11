@@ -1,7 +1,7 @@
 # WordPress Post Hits Counter – Monitor & Analyze Post Views
 Looking for an easy way to track how many times your WordPress blog posts are viewed? Our Post Hits Tracker Plugin is a lightweight yet powerful tool designed to capture and record every hit on your selected post types.
 
-Key Features:
+# Key Features:
   ✅ Easy to Install & Configure – Simply install the plugin, set your preferences, and it will start tracking post views automatically.
   ✅ Real-Time Hit Tracking – Monitor how often each post has been viewed with detailed records stored in your WordPress database.
   ✅ Comprehensive Analytics – View hit statistics directly from your WordPress Admin Panel, including:
