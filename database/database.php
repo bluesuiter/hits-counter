@@ -44,6 +44,18 @@ class phcDataBaseClass
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
         }
+		
+		$table_name = $wpdb->base_prefix . 'search_keywords';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            $sql = "CREATE TABLE `$table_name` (
+                        `id` int(11) NOT NULL,
+                        `keyword` varchar(225) NOT NULL,
+                        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+                        ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }
 
         $table_name = $wpdb->base_prefix . 'search_keyword_count';
         if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
