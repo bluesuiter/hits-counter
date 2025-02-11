@@ -8,12 +8,14 @@ Looking for an easy way to track how many times your WordPress blog posts are vi
   
   ✅ **Comprehensive Analytics –** View hit statistics directly from your WordPress Admin Panel, including:
       > **Daily Hit Count –** Track how many visits a post receives on a specific day.
+      
       > **Custom Time Range Tracking –** Analyze traffic within a particular timeframe.
+      
       > **All-Time Hit Count –** See the total number of hits accumulated over time.
   
   ✅ **Optimized for Performance –** Lightweight and efficient, ensuring it won’t slow down your website.
 
-Why Use This Plugin?
+# Why Use This Plugin?
 Understanding how users engage with your content is crucial for optimizing your WordPress blog. By tracking post views, you can:
 📈 Identify your most popular content.
 🎯 Improve your content strategy based on real data.
