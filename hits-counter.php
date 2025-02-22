@@ -4,7 +4,7 @@
 Plugin Name: Post Hits Counter
 Plugin URI: https://github.com/bluesuiter/Hits-Counter
 Description: A simple plugin for capturing hits on posts of your wordpress blog. Install it and see the hit records in your Admin Panel.
-Version: 2.15.23
+Version: 2.16.23
 Author: Script-Recipes
 Author URI: https://scriptrecipes.blogspot.in/2017/11/post-hits-counter.html
 Donate link: 
@@ -18,7 +18,7 @@ if (!defined('ABSPATH'))
 
 if (!defined('PHC_VERSION'))
 {
-    define('PHC_VERSION', '2.1.23');
+    define('PHC_VERSION', '2.16.24');
 }
 
 if (!defined('PHC_TABLE_NAME'))
