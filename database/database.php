@@ -1,24 +1,17 @@
 <?php
 
-class phcDataBaseClass
-{
+class phcDataBaseClass{
 
-    private $tableName = 'hitsCount';
+    var $tableName = PHC_TABLE_NAME;
 
-    /**
-     * This Will Add Table for plugin
-     */
     public function phcInstallDataTables()
     {
         $this->phcAddDataTable();
+        $this->phcAlterTable();
     }
 
-    /**
-     * This Will Check and Alter Table for plugin
-     */
-    public function phcUpdatesCheck()
-    {
-        $this->phcAlterTable();
+    public function phcUpdatesCheck(){
+        
     }
 
     /**
@@ -30,8 +23,8 @@ class phcDataBaseClass
 
         $charset_collate = $wpdb->get_charset_collate();
         $table_name = $wpdb->base_prefix . $this->tableName;
-
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        
+        if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
             $sql = "CREATE TABLE `$table_name` (
                      `id` int(11) PRIMARY KEY AUTO_INCREMENT,
                      `post_id` bigint(20) NOT NULL,
@@ -40,6 +33,17 @@ class phcDataBaseClass
                      `desktop` INT NOT NULL DEFAULT '0',
                      `mobile` INT NOT NULL DEFAULT '0'
                   ) $charset_collate;";
+
+            require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+            dbDelta($sql);
+        }  
+
+        $table_name = $wpdb->base_prefix.'search_keywords';
+        if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            $sql = "CREATE TABLE `$table_name` (
+                        `id` int(11) NOT NULL,
+                        `keyword` varchar(255) NOT NULL
+                    ) $charset_collate;";
 
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
             dbDelta($sql);
@@ -57,8 +61,8 @@ class phcDataBaseClass
             dbDelta($sql);
         }
 
-        $table_name = $wpdb->base_prefix . 'search_keyword_count';
-        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        $table_name = $wpdb->base_prefix.'search_keyword_count';
+        if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
             $sql = "CREATE TABLE `$table_name` (
                         `id` int(11) NOT NULL,
                         `keyword_id` int(11) DEFAULT NULL,
@@ -71,17 +75,15 @@ class phcDataBaseClass
         }
     }
 
-    /**
-     * This Will Alter Table for plugin
-     */
     private function phcAlterTable()
     {
         global $wpdb;
         $table_name = $wpdb->base_prefix . $this->tableName;
 
-        $version = get_option('phc_version_');
-        if (!$version || $version < '2.0.23') {
-            if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+        $version = get_option('phc_version_'); 
+        if(!$version || $version < PHC_VERSION)
+        {
+            if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
                 $sql = "ALTER TABLE `$table_name` 
                     ADD COLUMN `desktop` INT NOT NULL DEFAULT '0' AFTER hit_date,
                     ADD COLUMN `mobile` INT NOT NULL DEFAULT '0' AFTER desktop";
@@ -89,8 +91,8 @@ class phcDataBaseClass
                 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
                 dbDelta($sql);
 
-                add_option('phc_version_', '2.0.23');
+                add_option('phc_version_', PHC_VERSION);
             }
-        }
+        } 
     }
 }
